@@ -1,17 +1,25 @@
+import datetime
 import json
 import os
 import telebot
 from dotenv import load_dotenv
+
+import scraping
 from metode import lat_to_cir
+
+
+
+with open('iskljucenja.json', 'r', encoding='utf-8') as f:
+    datum = json.load(f)
+    dt = datetime.date.today()
+    dt = f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
+    if datum[0]['datum'] != dt:
+        scraping.scrape()
+
 
 load_dotenv()
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 bot = telebot.TeleBot(BOT_TOKEN)
-
-
-# @bot.message_handler(commands=['start', 'hello'])
-# def send_welcome(message):
-#     bot.reply_to(message, 'Welcome!')
 
 
 @bot.message_handler(commands=['iskljucenja'])
