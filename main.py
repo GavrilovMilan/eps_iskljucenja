@@ -5,14 +5,12 @@ import telebot
 from dotenv import load_dotenv
 
 import scraping
-from metode import lat_to_cir
-
-
+from metode import lat_to_cir, formatiraj_datum, cir_to_lat_osisano
 
 with open('iskljucenja.json', 'r', encoding='utf-8') as f:
     datum = json.load(f)
-    dt = datetime.date.today()
-    dt = f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
+    dt = formatiraj_datum(datetime.date.today())
+    # dt = f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
     if datum[0]['datum'] != dt:
         scraping.scrape()
 
@@ -32,7 +30,7 @@ def iskljucenja(message):
         res = ''
         # print(message.text[13:])
         for i in iskljucenja:
-            if lat_to_cir(message.text[13:]).upper() in i['ulice'].upper():
+            if message.text[13:].upper() in cir_to_lat_osisano(i['ulice']).upper():
                 res = res + f"{i['datum']} {i['opstina']}: {i['vreme_od']} - {i['vreme_do']} | {i['ulice']}" + '\n'
         if res != '':
             bot.reply_to(message, res)

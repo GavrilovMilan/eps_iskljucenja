@@ -24,5 +24,30 @@ def lat_to_cir(tekst):
 
     return ''.join(mapa.get(c,c) for c in tekst)
 
-def formatiraj_datum(tekst):
-    return 'Error: To be implemented.'
+
+def cir_to_lat_osisano(tekst):
+    mapa = {
+        'њ': 'nj', 'џ': 'dz', 'љ': 'lj',
+        'Њ': 'Nj', 'Џ': 'Dz', 'Љ': 'Lj',
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'ђ': 'd',
+        'е': 'e', 'ж': 'z', 'з': 'z', 'и': 'i', 'ј': 'j', 'к': 'k',
+        'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r',
+        'с': 's', 'т': 't', 'ћ': 'c', 'у': 'u', 'ф': 'f', 'х': 'h',
+        'ц': 'c', 'ч': 'c', 'ш': 's',
+        'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Ђ': 'D',
+        'Е': 'E', 'Ж': 'Z', 'З': 'Z', 'И': 'I', 'Ј': 'J', 'К': 'K',
+        'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R',
+        'С': 'S', 'Т': 'T', 'Ћ': 'C', 'У': 'U', 'Ф': 'F', 'Х': 'H',
+        'Ц': 'C', 'Ч': 'C', 'Ш': 'S'
+    }
+
+    for cir, lat in [('њ', 'nj'), ('џ', 'dz'), ('љ', 'lj'),
+                     ('Њ', 'Nj'), ('Џ', 'Dz'), ('Љ', 'Lj')]:
+        tekst = tekst.replace(lat,cir)
+
+    return ''.join(mapa.get(c,c) for c in tekst)
+
+
+def formatiraj_datum(dt):
+    return f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
+    #return 'Error: To be implemented.'

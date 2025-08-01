@@ -3,11 +3,12 @@ import json
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+# Umesto BeautifulSoup, može se koristiti pandas sa pandas.read_html(url)
 
 def scrape():
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    # sa urllib prešao na requests jer može da radi bez verifikacije SSL sertifikata
+    # Sa urllib prešao na requests jer može da radi bez verifikacije SSL sertifikata
 
     urls = ['https://elektrodistribucija.rs/planirana-iskljucenja-srbija/NoviSad_Dan_0_Iskljucenja.htm',
             'https://elektrodistribucija.rs/planirana-iskljucenja-srbija/NoviSad_Dan_1_Iskljucenja.htm',
