@@ -3,6 +3,11 @@ import json
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+from datetime import datetime
+
+from metode import *
+
+
 # Umesto BeautifulSoup, može se koristiti pandas sa pandas.read_html(url)
 
 def scrape():
@@ -42,8 +47,13 @@ def scrape():
 
         raw_data = soup.find_all('tr')
         datum = re.search(r'за датум:\s*((?:\d{2}\.\d{2}\.\d{4}\.)|(?:\d{4}-\d{2}-\d{2}))', str(raw_data), re.IGNORECASE).group(1)
-        # Uraditi standardno formatiranje datuma na dd.MM.yyyy. pošto EPS koristi to za sve osim za Beograd, gde koristi yyyy-MM-dd
+        if re.search(r'\b\d{4}-\d{2}-\d{2}\b', str(datum)):
+            datum = datetime.strptime(datum, '%Y-%m-%d').date()
+        else:
+            datum = datetime.strptime(datum, '%d.%m.%Y.').date()
+        datum = formatiraj_datum(datum)
         print(f'Datum: {datum}')
+
         for row in raw_data[2:]: # preskačemo naslove kolona
             cols = row.find_all('td')
             # Quick Fix, u tabeli za Beograd ne postoji Ogranak

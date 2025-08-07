@@ -49,5 +49,6 @@ def cir_to_lat_osisano(tekst):
 
 
 def formatiraj_datum(dt):
-    return f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
+    #return f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
+    return f"{dt.day}.{dt.month}.{dt.year}."
     #return 'Error: To be implemented.'
