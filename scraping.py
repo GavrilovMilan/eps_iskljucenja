@@ -40,6 +40,8 @@ def scrape():
     headers = {'User-Agent': 'Mozilla/5.0'}
 
     iskljucenja = []
+    datum_i_vreme_provere = datetime.now().strftime('%d.%m.%Y. %H:%M:%S')
+    iskljucenja.append({'datum_i_vreme_provere': datum_i_vreme_provere})
     for url in urls:
         req = requests.get(url, headers=headers, verify=False)
         req.encoding = 'utf-8'

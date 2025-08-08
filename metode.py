@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 def lat_to_cir(tekst):
     mapa = {
         'nj': 'њ', 'dž': 'џ', 'lj': 'љ',
@@ -49,6 +52,14 @@ def cir_to_lat_osisano(tekst):
 
 
 def formatiraj_datum(dt):
-    #return f"{dt.day}.{'{:02d}'.format(dt.month)}.{dt.year}."
     return f"{dt.day}.{dt.month}.{dt.year}."
-    #return 'Error: To be implemented.'
+
+
+def uporedi_datume(dt1, dt2):
+    format_datuma = '%d.%m.%Y. %H:%M:%S'
+    dt1 = datetime.strptime(dt1, format_datuma)
+    dt2 = datetime.strptime(dt2, format_datuma)
+
+    razlika = abs(dt1 - dt2)
+
+    return razlika
