@@ -1,9 +1,6 @@
-import json
 import logging
-import os
 import telebot
 from dotenv import load_dotenv
-from datetime import datetime
 
 import scraping
 from metode import *
@@ -12,26 +9,35 @@ from metode import *
 PERIOD_OSVEZAVANJA = 1 # Izražen u satima
 
 
-if not os.path.isdir('logs'):
-    os.mkdir('logs')
+potrebni_dir_dok()
+
+
 logger = logging.getLogger(__name__)
 datum = datetime.today().strftime('%Y_%m_%d')
+logging.basicConfig(filename=f'logovi/{datum}.log', level=logging.INFO, encoding='utf-8',
+                            format='%(asctime)s:%(levelname)s:%(message)s', datefmt='%d.%m.%Y. %H:%M:%S')
+
+
 def log_user_message(handler):
     def wrapper(message):
         datum = datetime.today().strftime('%Y_%m_%d')
-        logging.basicConfig(filename=f'logs/{datum}.log', level=logging.INFO, encoding='utf-8',
+        logging.basicConfig(filename=f'logovi/{datum}.log', level=logging.INFO, encoding='utf-8',
                             format='%(asctime)s:%(levelname)s:%(message)s', datefmt='%d.%m.%Y. %H:%M:%S')
         logger.info(f"UserID:{message.from_user.id}, {message.from_user.last_name} {message.from_user.first_name}: '{message.text}'")
         return handler(message)
     return wrapper
 
 
-with open('iskljucenja.json', 'r', encoding='utf-8') as f:
-    datum = json.load(f)[0]['datum_i_vreme_provere']
-    dt = datetime.now().strftime('%d.%m.%Y. %H:%M:%S')
-    if uporedi_datume(datum, dt).total_seconds() >= PERIOD_OSVEZAVANJA * 3600:
-        scraping.scrape()
-        logger.info('Osvežio podatke')
+if os.path.exists('podaci/iskljucenja.json'):
+    with open('podaci/iskljucenja.json', 'r', encoding='utf-8') as f:
+        datum = json.load(f)[0]['datum_i_vreme_provere']
+        dt = datetime.now().strftime('%d.%m.%Y. %H:%M:%S')
+        if uporedi_datume(datum, dt).total_seconds() >= PERIOD_OSVEZAVANJA * 3600:
+            scraping.scrape()
+            logger.info('Osvežio podatke')
+else:
+    scraping.scrape()
+    logger.info('Nije postojao dokument iskljucenja.json, osveženi podaci')
 
 
 load_dotenv()
@@ -42,7 +48,12 @@ bot = telebot.TeleBot(BOT_TOKEN)
 @bot.message_handler(commands=['iskljucenja'])
 @log_user_message
 def iskljucenja(message):
-    with open('iskljucenja.json', 'r', encoding='utf-8') as f:
+    chat_id = message.chat.id
+    if not check_korisnik(chat_id):
+        print('Korisnik ne postoji, dodajem novog korisnika')
+        add_korisnik(message.json['from'])
+
+    with open('podaci/iskljucenja.json', 'r', encoding='utf-8') as f:
         iskljucenja = json.load(f)
 
     if len(message.text) > 13:
@@ -60,6 +71,12 @@ def iskljucenja(message):
         bot.reply_to(message, f"Unesite mesto ili ulicu za koju želite da proverite najavljena isključenja.")
 
 
+@bot.message_handler(commands=['dodaj'])
+@log_user_message
+def dodaj(message):
+    print('TODO')
+
+
 @bot.message_handler(func=lambda msg: True)
 @log_user_message
 def echo(message):
@@ -70,8 +87,6 @@ def echo(message):
     else:
         bot.reply_to(message, 'Nepoznata komanda.')
 
-
-logger.info('Bot startovan')
-print(1)
+print('Bot startovan')
 
 bot.infinity_polling()

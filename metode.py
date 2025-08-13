@@ -1,3 +1,5 @@
+import json
+import os
 from datetime import datetime
 
 
@@ -63,3 +65,58 @@ def uporedi_datume(dt1, dt2):
     razlika = abs(dt1 - dt2)
 
     return razlika
+
+
+def potrebni_dir_dok():
+    if not os.path.isdir('podaci'):
+        print(f"/podaci direktorijum nije pronađen, napravljen novi")
+        os.mkdir('podaci')
+
+    if not os.path.isdir('logovi'):
+        print(f"/logovi direktorijum nije pronađen, napravljen novi")
+        os.mkdir('logovi')
+
+    if not os.path.exists('podaci/korisnici.json'):
+        with open('podaci/korisnici.json', 'w', encoding='utf-8') as f:
+            json.dump([], f, indent=4)
+
+    if not os.path.exists('podaci/obavestenja.json'):
+        with open('podaci/obavestenja.json', 'w', encoding='utf-8') as f:
+            json.dump([], f, indent=4)
+
+
+def check_korisnik(chat_id):
+    if os.path.exists('podaci/korisnici.json'):
+        with open('podaci/korisnici.json', 'r', encoding='utf-8') as f:
+            for user in json.load(f):
+                if chat_id == user['chat_id']:
+                    return True
+    return False
+
+
+def add_korisnik(message_json):
+    korisnik = {
+        'chat_id': message_json['id'],
+        'first_name': message_json['first_name'],
+        'last_name': message_json['last_name'],
+        'username': message_json['username']
+    }
+
+    with open('podaci/korisnici.json', 'r+', encoding='utf-8') as f:
+        korisnici = json.load(f)
+        korisnici.append(korisnik)
+        f.seek(0)
+        f.truncate()
+        json.dump(korisnici, f, ensure_ascii=False, indent=2)
+
+
+def get_obavestenja(chat_id):
+    print('To be implemented: get_obavestenja()')
+
+
+def add_obavestenje(chat_id):
+    print('To be implemented: add_obavestenje()')
+
+
+def del_obavestenje(chat_id):
+    print('To be implemented: del_obavestenje()')

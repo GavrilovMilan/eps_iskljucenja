@@ -54,7 +54,7 @@ def scrape():
         else:
             datum = datetime.strptime(datum, '%d.%m.%Y.').date()
         datum = formatiraj_datum(datum)
-        print(f'Datum: {datum}')
+        # print(f'Datum: {datum}')
 
         for row in raw_data[2:]: # preskačemo naslove kolona
             cols = row.find_all('td')
@@ -84,7 +84,7 @@ def scrape():
         # for i in iskljucenja:
         #     print(f'{i['opstina']}: {i['vreme_od']} - {i['vreme_do']} | {i['ulice']}')
 
-    with open('iskljucenja.json', 'w', encoding='utf-8') as f:
+    with open('podaci/iskljucenja.json', 'w', encoding='utf-8') as f:
         json.dump(iskljucenja, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
